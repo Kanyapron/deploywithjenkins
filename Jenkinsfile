@@ -11,15 +11,25 @@ pipeline {
   }
 
   stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
     stage('Install Dependencies') {
       steps {
-        sh 'npm install'
+        dir('frontend') { // ✅ ปรับตามโครงสร้างโปรเจกต์ของคุณ
+          sh 'npm install'
+        }
       }
     }
 
     stage('Build React App') {
       steps {
-        sh 'npm run build'
+        dir('frontend') {
+          sh 'npm run build'
+        }
       }
     }
 
@@ -31,7 +41,9 @@ pipeline {
 
     stage('Deploy to Firebase') {
       steps {
-        sh 'firebase deploy --token "$FIREBASE_TOKEN"'
+        dir('frontend') {
+          sh 'firebase deploy --token "$FIREBASE_TOKEN"'
+        }
       }
     }
   }
